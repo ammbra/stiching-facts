@@ -9,8 +9,8 @@ import java.util.Optional;
 @ApplicationScoped
 public class EnhancedFactRepository implements PanacheRepository<EnhancedFact> {
 
-    public Optional<EnhancedFact> findByRandomness(Double randomness) {
-            return find("randomness=?1",  randomness).stream().findAny();
+    public Optional<EnhancedFact> findBySource(String source) {
+            return find("source=?1",  source).stream().findAny();
     }
 
 }

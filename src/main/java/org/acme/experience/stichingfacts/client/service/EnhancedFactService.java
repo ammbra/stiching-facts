@@ -7,6 +7,7 @@ import org.acme.experience.stichingfacts.client.model.EnhancedFact;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
+import java.util.List;
 import java.util.Set;
 
 @ApplicationScoped
@@ -26,7 +27,8 @@ public class EnhancedFactService {
     }
 
 
-    public EnhancedFact findByRandomness(Double randomness) throws FactNotFoundException {
-        return repository.findByRandomness(randomness).orElseThrow(() -> new FactNotFoundException("No fact was found for randomness" + randomness));
+    public EnhancedFact findBySource(String source) throws FactNotFoundException {
+        return repository.findBySource(source).orElseThrow(() -> new FactNotFoundException("No fact was found for source" + source));
     }
+
 }

@@ -34,17 +34,17 @@ class EnhancedFactServiceTest {
     @SneakyThrows
     @Test
     void findByRandomness() {
-        Double random = Math.random();
-        when(repository.findByRandomness(random)).thenReturn(Optional.of(new EnhancedFact()));
-        service.findByRandomness(random);
-        verify(repository, times(1)).findByRandomness(random);
+        String source = "api";
+        when(repository.findBySource(source)).thenReturn(Optional.of(new EnhancedFact()));
+        service.findBySource(source);
+        verify(repository, times(1)).findBySource(source);
     }
 
     @SneakyThrows
     @Test
     void factNotFoundByRandomness() {
-        Double random = Math.random();
-        assertThrows(FactNotFoundException.class, () -> service.findByRandomness(random));
-        verify(repository, times(1)).findByRandomness(random);
+        String source = "web";
+        assertThrows(FactNotFoundException.class, () -> service.findBySource(source));
+        verify(repository, times(1)).findBySource(source);
     }
 }

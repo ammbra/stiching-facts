@@ -1,5 +1,6 @@
 package org.acme.experience.stichingfacts.client;
 
+import lombok.SneakyThrows;
 import org.acme.experience.stichingfacts.client.model.EnhancedFact;
 import org.acme.experience.stichingfacts.client.model.Fact;
 import org.acme.experience.stichingfacts.client.service.EnhancedFactService;
@@ -15,6 +16,7 @@ import org.slf4j.LoggerFactory;
 import javax.inject.Inject;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
+import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
@@ -39,12 +41,13 @@ public class FactsEndpoint {
         return factsService.getByType(type.split(","));
     }
 
+    @SneakyThrows
     @GET
     @Path("/animal-async")
     @Produces(MediaType.APPLICATION_JSON)
     @Query("allAnimalsByTypeAsync")
-    public CompletableFuture<Set<Fact>> getByTypeAsync(@QueryParam("type") String type) {
-        return CompletableFuture.supplyAsync(() -> factsService.getByType(type.split(",")));
+    public Set<Fact> getByTypeAsync(@QueryParam("type") String type) {
+        return CompletableFuture.supplyAsync(() -> factsService.getByType(type.split(","))).get();
     }
 
     @GET
@@ -61,21 +64,21 @@ public class FactsEndpoint {
     @Query("animalByFactId")
     public CompletionStage<EnhancedFact> getFactAsync(@PathParam("factId") String factId, @PathParam("randomness")@DefaultValue("0.0845") Double randomness) throws FactNotFoundException {
             return factsService.getByFactIDAsync(factId).whenComplete((enhancedFact, throwable) -> {
-                if ( enhancedFact.randomness == null ) {
-                    enhancedFact.randomness = randomness;
+                if ( enhancedFact.getRandomness() == null ) {
+                    enhancedFact.setRandomness(randomness);
                 }
             });
     }
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    @Query("enhancedFactsByAnimalAndRandomness")
-    @Path("/animal/enhanced-fact/{type}/{randomness}")
-    public EnhancedFact getEnhancedFact(@PathParam("type") String type, @PathParam("randomness")Double randomness) {
+    @Query("enhancedFactsByAnimalAndSource")
+    @Path("/animal/enhanced-fact/{type}/{source}")
+    public EnhancedFact getEnhancedFact(@PathParam("type") String type, @PathParam("source")String source) {
         try {
-            return enhancedFactService.findByRandomness(randomness);
+            return enhancedFactService.findBySource(source);
         } catch (FactNotFoundException e) {
-            LOG.debug("Fact not found for the given type {} and randomness", e);
+            LOG.debug("Fact not found for the given type {} and source", e);
             return new EnhancedFact();
         }
     }

@@ -10,6 +10,8 @@ import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.h2.H2DatabaseTestResource;
 import io.quarkus.test.junit.QuarkusTest;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
+import org.junit.jupiter.api.MethodOrderer;
 
 import javax.inject.Inject;
 import java.util.ArrayList;
@@ -19,11 +21,12 @@ import static io.restassured.RestAssured.given;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 
 @QuarkusTest
+@TestMethodOrder(MethodOrderer.MethodName.class)
 public class FactsEndpointITest {
 
     private final SimpleMeterRegistry registry = new SimpleMeterRegistry();
@@ -126,8 +129,9 @@ public class FactsEndpointITest {
             }
         });
         double asyncTime = timerASync.totalTime(MILLISECONDS);
+
         //then
-        assertTrue(syncTime > asyncTime * 3);
+        assertTrue(syncTime > asyncTime * 2);
     }
 
 }
