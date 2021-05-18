@@ -16,7 +16,6 @@ import org.slf4j.LoggerFactory;
 import javax.inject.Inject;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
-import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
@@ -46,8 +45,8 @@ public class FactsEndpoint {
     @Path("/animal-async")
     @Produces(MediaType.APPLICATION_JSON)
     @Query("allAnimalsByTypeAsync")
-    public Set<Fact> getByTypeAsync(@QueryParam("type") String type) {
-        return CompletableFuture.supplyAsync(() -> factsService.getByType(type.split(","))).get();
+    public CompletableFuture<Set<Fact>> getByTypeAsync(@QueryParam("type") String type) {
+        return CompletableFuture.supplyAsync(() -> factsService.getByType(type.split(",")));
     }
 
     @GET
