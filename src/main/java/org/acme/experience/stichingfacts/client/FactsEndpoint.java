@@ -45,7 +45,7 @@ public class FactsEndpoint {
     @Path("/animal-async")
     @Produces(MediaType.APPLICATION_JSON)
     @Query("allAnimalsByTypeAsync")
-    public CompletableFuture<Set<Fact>> getByTypeAsync(@QueryParam("type") String type) {
+    public CompletionStage<Set<Fact>> getByTypeAsync(@QueryParam("type") String type) {
         return CompletableFuture.supplyAsync(() -> factsService.getByType(type.split(",")));
     }
 
